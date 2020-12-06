@@ -1,3 +1,4 @@
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,7 +15,7 @@ public class Garden {
         String fileName = "";
 
         System.out.println("Would you like to create a new garden or continue a garden?");
-        System.out.print("Enter 'New' to create a new garden or enter file name to continue garden: " );
+        System.out.print("Enter 'New' to create a new garden or enter file name to continue garden: ");
         fileName = "" + keyboard.nextLine() + ".txt";
         System.out.println("Using garden file: " + fileName);
 
@@ -38,15 +39,16 @@ public class Garden {
 
         //adds plant to file
         try {
-            for (int row = 0; row < garden.length; row++) {
-                FileWriter myWriter = new FileWriter("gardenFile.txt");
-                myWriter.write(Arrays.toString(garden[row]));
-                myWriter.close();
+            BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
+
+            for (int i = 0; i < garden.length; i++) {
+                for (int j = 0; j < garden[i].length; j++) {
+                    bw.write(garden[i][j] + ((j == garden[i].length - 1) ? "" : ","));
+                }
+                bw.newLine();
             }
-            System.out.println("Successfully wrote to the file.");
+            bw.flush();
         } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
         }
     }
 
@@ -70,8 +72,8 @@ public class Garden {
         }
          */
 
-        System.out.println("What flower would you like to plant and where would you like to plant it");
-        int x = keyboard.nextInt() ;
+        System.out.println("Where would you like to plant the flower?");
+        int x = keyboard.nextInt();
         int y = keyboard.nextInt();
 
         garden[x][y] = "[" + plant + "]";
