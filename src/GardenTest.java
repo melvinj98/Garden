@@ -2,14 +2,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class GardenTest {
+    /*
     @Test
     void createGarden(){
         //TODO set size of garden
         Garden garden = new Garden();
         int row = 3, column = 5;
-        boolean gardenMade = Garden.createGarden(row, column);
+        boolean gardenMade = Garden.createGarden();
         Assertions.assertEquals(true, gardenMade);
     }
+     */
 
     /*
     @Test
