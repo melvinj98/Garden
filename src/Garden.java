@@ -10,13 +10,34 @@ public class Garden {
     public static void main(String[] args) {
         String[][] garden = new String[row][column];
 
-        System.out.println("Would you like to create a new garden or continue a garden?");
-        System.out.print("Enter 'New' to create a new garden or enter file name to continue garden: ");
-        fileName = "" + keyboard.nextLine() + ".txt";
-        if(fileName.toLowerCase().equals("new")){
-            createGarden(fileName);
+        //test to fill garden array
+        try {
+            for (int x = 0; x < garden.length; x++) {
+                for (int y = 0; y < garden[0].length; y++) {
+                    garden[x][y] = "[" + plant + "]";
+                }
+            }
+        } catch (Exception e) {
         }
-        else {
+
+        System.out.println("Would you like to create a new garden or continue a garden?[Y/N]");
+        String option = keyboard.nextLine();
+        if(option.toLowerCase().equals("y")){
+            System.out.println("Enter new garden name");
+            fileName = keyboard.nextLine() ;
+            createGarden(fileName);
+            try {
+                for (int x = 0; x < garden.length; x++) {
+                    for (int y = 0; y < garden[0].length; y++) {
+                        garden[x][y] = "x";
+                    }
+                }
+            } catch (Exception e) {
+            }
+        }
+        else if(option.toLowerCase().equals("n")){
+            System.out.println("Which garden would you like to continue?");
+            fileName = keyboard.nextLine();
             System.out.println("Using garden file: " + fileName);
         }
 
