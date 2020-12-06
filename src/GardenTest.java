@@ -3,27 +3,26 @@ import org.junit.jupiter.api.Test;
 
 public class GardenTest {
     @Test
-    void loadPlantData(){
-        //TODO load plant data
-    }
-
-    @Test
     void createGarden(){
         //TODO set size of garden
         Garden garden = new Garden();
-        int length = 3, width = 5;
-        boolean gardenMade = Garden.createGarden(length, width);
+        int row = 3, column = 5;
+        boolean gardenMade = Garden.createGarden(row, column);
         Assertions.assertEquals(true, gardenMade);
     }
 
+    /*
     @Test
     void plantInGarden(){
         //TODO select/add a plant and pick where in garden to plant
         Garden garden = new Garden();
         String plant = "x";
-        boolean planted = Garden.plantInGarden("x");
+        String[][] gardenArray = new String[5][5];
+        String[][] planted = Garden.plantInGarden(gardenArray);
         Assertions.assertEquals(true, planted );
     }
+
+     */
 
     @Test
     void removePlant(){
