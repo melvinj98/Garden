@@ -9,6 +9,8 @@ public class Garden {
 
     public static void main(String[] args) {
         String[][] garden = new String[row][column];
+        String option;
+        boolean quit = false;
 
         //test to fill garden array
         try {
@@ -21,7 +23,7 @@ public class Garden {
         }
 
         System.out.println("Would you like to create a new garden or continue a garden?[Y/N]");
-        String option = keyboard.nextLine();
+        option = keyboard.nextLine();
         if(option.toLowerCase().equals("y")){
             System.out.println("Enter new garden name");
             fileName = keyboard.nextLine() ;
@@ -41,13 +43,26 @@ public class Garden {
             System.out.println("Using garden file: " + fileName);
         }
 
-        readFromFile(garden, fileName);
-        plantInGarden(garden);
-        addToFile(garden, fileName);
 
-        for (String[] strings : garden) {
-            System.out.println(Arrays.toString(strings));
-        }
+        readFromFile(garden, fileName);
+        do{
+            System.out.println("Remove, Add, or Quit?");
+            option = keyboard.nextLine();
+            switch(option.toLowerCase()){
+                case "remove" -> removeFromGarden(garden);
+                case "add" -> addToGarden(garden);
+                case "quit" -> {
+                    System.out.println("Quitting Program");
+                    quit = false;
+                }
+                default -> System.out.println("Not a valid option");
+            }
+            addToFile(garden, fileName);
+
+            for (String[] strings : garden) {
+                System.out.println(Arrays.toString(strings));
+            }
+        }while(quit != true);
     }
 
     //creates garden file
@@ -85,7 +100,13 @@ public class Garden {
     }
 
     //adds plant to garden array
-    public static String[][] plantInGarden(String[][] garden) {
+    public static String[][] addToGarden(String[][] garden) {
+        for (String[] strings : garden) {
+            System.out.println(Arrays.toString(strings));
+        }
+        System.out.println("");
+        System.out.println("-------------------------------");
+        System.out.print("");
         plantList();
 
         System.out.println("Where would you like to plant the flower?");
@@ -93,6 +114,20 @@ public class Garden {
         int y = keyboard.nextInt();
 
         garden[x][y] = "[" + plant + "]";
+
+        return garden;
+    }
+
+    //removes plant from garden array
+    public static String[][] removeFromGarden(String[][] garden){
+        for (String[] strings : garden) {
+            System.out.println(Arrays.toString(strings));
+        }
+
+        System.out.println("Which spot would you like to clear up?: ");
+        int x = keyboard.nextInt();
+        int y = keyboard.nextInt();
+        garden[x][y] = "x";
 
         return garden;
     }
