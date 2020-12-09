@@ -1,8 +1,8 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
+/*
 public class GardenTest {
-    /*
+    //
     @Test
     void createGarden(){
         //TODO set size of garden
@@ -11,9 +11,9 @@ public class GardenTest {
         boolean gardenMade = Garden.createGarden();
         Assertions.assertEquals(true, gardenMade);
     }
-     */
 
-    /*
+
+
     @Test
     void plantInGarden(){
         //TODO select/add a plant and pick where in garden to plant
@@ -24,7 +24,7 @@ public class GardenTest {
         Assertions.assertEquals(true, planted );
     }
 
-     */
+
 
     @Test
     void removePlant(){
@@ -51,3 +51,4 @@ public class GardenTest {
         //TODO load garden from file
     }
 }
+*/

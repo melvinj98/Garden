@@ -4,14 +4,16 @@ import java.util.Scanner;
 
 public class Garden {
     static Scanner keyboard = new Scanner(System.in);
-    static int row = 5, column = 5;
+    static int row, column;
     static String plant = "", fileName;
-
+    static String[][] garden;
+    boolean correctSize = true;
     public static void main(String[] args) {
-        String[][] garden = new String[row][column];
         String option;
         boolean quit = false;
+        boolean correctSize = false;
 
+        /*
         //test to fill garden array
         try {
             for (int x = 0; x < garden.length; x++) {
@@ -21,13 +23,30 @@ public class Garden {
             }
         } catch (Exception e) {
         }
+        */
 
-        System.out.println("Would you like to create a new garden or continue a garden?[Y/N]");
+        System.out.println("Would you like to create a new garden?[Y/N]");
         option = keyboard.nextLine();
-        if(option.toLowerCase().equals("y")){
+        if (option.equalsIgnoreCase("y")) {
             System.out.println("Enter new garden name");
-            fileName = keyboard.nextLine() ;
-            createGarden(fileName);
+            fileName = keyboard.nextLine();
+
+
+            do{
+                System.out.println("Enter size of new garden");
+                row = keyboard.nextInt();
+                column = keyboard.nextInt();
+                if (row >= 5 && column >= 5) {
+                    garden = new String[row][column];
+                    correctSize = true;
+                }
+                else
+                    System.out.println("Garden must be at least 5x5");
+            }while(!correctSize);
+
+           // createGarden(fileName);
+
+            //fills garden with x (x = empty spots)
             try {
                 for (int x = 0; x < garden.length; x++) {
                     for (int y = 0; y < garden[0].length; y++) {
@@ -35,40 +54,43 @@ public class Garden {
                     }
                 }
             } catch (Exception e) {
+                System.out.println("Error");
             }
-        }
-        else if(option.toLowerCase().equals("n")){
+
+        } else if (option.equalsIgnoreCase("n")) {
             System.out.println("Which garden would you like to continue?");
             fileName = keyboard.nextLine();
             System.out.println("Using garden file: " + fileName);
+
+            readFromFile(garden, fileName);
         }
-
-
-        readFromFile(garden, fileName);
-        do{
-            System.out.println("Remove, Add, or Quit?");
-            option = keyboard.nextLine();
-            switch(option.toLowerCase()){
-                case "remove" -> removeFromGarden(garden);
-                case "add" -> addToGarden(garden);
-                case "quit" -> {
-                    System.out.println("Quitting Program");
-                    quit = false;
+        do {
+                System.out.println("Remove, Add, or Quit?");
+                String option1 = keyboard.next();
+                switch (option1.toLowerCase()) {
+                    case "remove" -> removeFromGarden(garden);
+                    case "add" -> addToGarden(garden);
+                    case "quit" -> {
+                        System.out.println("Quitting Program");
+                        quit = true;
+                    }
+                    default -> System.out.println("Not a valid option, try again");
                 }
-                default -> System.out.println("Not a valid option");
-            }
-            addToFile(garden, fileName);
 
-            for (String[] strings : garden) {
-                System.out.println(Arrays.toString(strings));
-            }
-        }while(quit != true);
+
+                for (String[] strings : garden) {
+                    System.out.println(Arrays.toString(strings));
+                }
+            } while (!quit);
+         addToFile(garden, fileName, row, column);
+
+
     }
 
     //creates garden file
     public static boolean createGarden(String fileName) {
         try {
-            File gardenFile = new File(fileName);
+            File gardenFile = new File(fileName + ".txt");
             if (gardenFile.createNewFile()) {
                 System.out.println("Created " + fileName);
             } else {
@@ -82,14 +104,13 @@ public class Garden {
     }
 
     //reads from selected file and adds to garden array
-    public static void readFromFile(String[][] garden, String fileName){
-        //todo: read from file to array
+    public static void readFromFile(String[][] garden, String fileName) {
         try {
             Scanner sc = new Scanner(new BufferedReader(new FileReader(fileName)));
-            while(sc.hasNextLine()){
-                for(int i = 0; i < garden.length; i++){
+            while (sc.hasNextLine()) {
+                for (int i = 0; i < garden.length; i++) {
                     String[] line = sc.nextLine().trim().split(",");
-                    for(int j = 0; j < line.length; j++){
+                    for (int j = 0; j < line.length; j++) {
                         garden[i][j] = line[j];
                     }
                 }
@@ -104,7 +125,7 @@ public class Garden {
         for (String[] strings : garden) {
             System.out.println(Arrays.toString(strings));
         }
-        System.out.println("");
+        System.out.println();
         System.out.println("-------------------------------");
         System.out.print("");
         plantList();
@@ -113,13 +134,23 @@ public class Garden {
         int x = keyboard.nextInt();
         int y = keyboard.nextInt();
 
-        garden[x][y] = "[" + plant + "]";
+        if (garden[x][y].equals("x")) {
+            garden[x][y] = "[" + plant + "]";
+        } else {
+            System.out.println("There is already a flower here, would you like to replace it?[Y/N]");
+            String option = keyboard.next();
+            if (option.equalsIgnoreCase("y")) {
+                garden[x][y] = "[" + plant + "]";
+            } else {
+                System.out.println("Selected flower will not be planted");
+            }
+        }
 
         return garden;
     }
 
     //removes plant from garden array
-    public static String[][] removeFromGarden(String[][] garden){
+    public static String[][] removeFromGarden(String[][] garden) {
         for (String[] strings : garden) {
             System.out.println(Arrays.toString(strings));
         }
@@ -133,10 +164,11 @@ public class Garden {
     }
 
     //adds garden array to file
-    public static void addToFile(String[][] garden, String fileName){
+    public static void addToFile(String[][] garden, String fileName, int row, int column) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
-
+            bw.write(row + "," + column);
+            bw.newLine();
             for (String[] strings : garden) {
                 for (int j = 0; j < strings.length; j++) {
                     bw.write(strings[j] + ((j == strings.length - 1) ? "" : ","));
@@ -161,7 +193,7 @@ public class Garden {
         System.out.println("Orchids: I");
         System.out.println("Lavender: J");
         System.out.print("Select Plant: ");
-        String input = keyboard.nextLine();
+        String input = keyboard.next();
 
         switch (input.toLowerCase()) {
             case "a" -> plant = "A";
