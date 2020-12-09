@@ -4,10 +4,11 @@ import java.util.Scanner;
 
 public class Garden {
     static Scanner keyboard = new Scanner(System.in);
-    static int row, column;
+    static int row = 5, column = 5;
     static String plant = "", fileName;
-    static String[][] garden;
+    static String[][] garden = new String[row][column];
     boolean correctSize = true;
+
     public static void main(String[] args) {
         String option;
         boolean quit = false;
@@ -32,19 +33,18 @@ public class Garden {
             fileName = keyboard.nextLine();
 
 
-            do{
+            do {
                 System.out.println("Enter size of new garden");
                 row = keyboard.nextInt();
                 column = keyboard.nextInt();
                 if (row >= 5 && column >= 5) {
                     garden = new String[row][column];
                     correctSize = true;
-                }
-                else
+                } else
                     System.out.println("Garden must be at least 5x5");
-            }while(!correctSize);
+            } while (!correctSize);
 
-           // createGarden(fileName);
+            // createGarden(fileName);
 
             //fills garden with x (x = empty spots)
             try {
@@ -65,24 +65,24 @@ public class Garden {
             readFromFile(garden, fileName);
         }
         do {
-                System.out.println("Remove, Add, or Quit?");
-                String option1 = keyboard.next();
-                switch (option1.toLowerCase()) {
-                    case "remove" -> removeFromGarden(garden);
-                    case "add" -> addToGarden(garden);
-                    case "quit" -> {
-                        System.out.println("Quitting Program");
-                        quit = true;
-                    }
-                    default -> System.out.println("Not a valid option, try again");
+            System.out.println("Remove, Add, or Quit?");
+            String option1 = keyboard.next();
+            switch (option1.toLowerCase()) {
+                case "remove" -> removeFromGarden(garden);
+                case "add" -> addToGarden(garden);
+                case "quit" -> {
+                    System.out.println("Quitting Program");
+                    quit = true;
                 }
+                default -> System.out.println("Not a valid option, try again");
+            }
 
 
-                for (String[] strings : garden) {
-                    System.out.println(Arrays.toString(strings));
-                }
-            } while (!quit);
-         addToFile(garden, fileName, row, column);
+            for (String[] strings : garden) {
+                System.out.println(Arrays.toString(strings));
+            }
+        } while (!quit);
+        addToFile(garden, fileName, column);
 
 
     }
@@ -107,14 +107,25 @@ public class Garden {
     public static void readFromFile(String[][] garden, String fileName) {
         try {
             Scanner sc = new Scanner(new BufferedReader(new FileReader(fileName)));
+            int columns = 0;
+
             while (sc.hasNextLine()) {
-                for (int i = 0; i < garden.length; i++) {
+                for(int i = 0; i < 1; i++){
+                    String[] line = sc.nextLine().trim().split(",");
+                    columns = Integer.parseInt(line[i]);
+                }
+
+                for (int i = 0; i < columns - 1; i++) {
                     String[] line = sc.nextLine().trim().split(",");
                     for (int j = 0; j < line.length; j++) {
-                        garden[i][j] = line[j];
+
+                            garden[i][j] = line[j];
+                        }
+
+
                     }
                 }
-            }
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -164,10 +175,10 @@ public class Garden {
     }
 
     //adds garden array to file
-    public static void addToFile(String[][] garden, String fileName, int row, int column) {
+    public static void addToFile(String[][] garden, String fileName, int column) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
-            bw.write(row + "," + column);
+            bw.write(column + ",");
             bw.newLine();
             for (String[] strings : garden) {
                 for (int j = 0; j < strings.length; j++) {
