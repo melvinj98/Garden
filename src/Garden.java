@@ -59,9 +59,8 @@ public class Garden {
             System.out.println("[5] Move plant");
             System.out.println("[6] See locations of plant");
             System.out.println("[7] Let it rain");
-
-
-            System.out.println("[8] Quit");
+            System.out.println("[8] Drought");
+            System.out.println("[9] Quit");
 
             option = keyboard.next();
 
@@ -73,7 +72,8 @@ public class Garden {
                 case "5" -> movePlant(garden);
                 case "6" -> plantLocations(garden);
                 case "7" -> letItRain(garden);
-                case "8" -> {
+                case "8" -> drought(garden);
+                case "9" -> {
                     System.out.println("Quitting Program");
                     quit = true;
                 }
@@ -84,12 +84,44 @@ public class Garden {
         addToFile(garden, fileName, column);
     }
 
+    private static void drought(String[][] garden) {
+        int droughtRow, rainColumn;
+        int min = 0;
+        int rowRange = (row - 1) - min + 1;
+        int columnRange = (column - 1) - min + 1;
+        int availableSpots = 0;
+
+        for (int x = 0; x < garden.length; x++) {
+            for (int y = 0; y < garden[0].length; y++) {
+                String spot = garden[x][y];
+                if (!spot.equals("*"))
+                    availableSpots++;
+            }
+        }
+
+        if (availableSpots > 0) {
+            for (int i = 0; i < 5; i++) {
+                droughtRow = (int) (Math.random() * rowRange) + min;
+                rainColumn = (int) (Math.random() * columnRange) + min;
+                String randomSpot = garden[droughtRow][rainColumn];
+
+                if (!randomSpot.equals("*")) {
+                    garden[droughtRow][rainColumn] = "*";
+                    availableSpots--;
+                }
+                viewGarden(garden);
+            }
+        } else {
+            System.out.println("Garden is empty");
+        }
+
+    }
+
     private static void letItRain(String[][] garden) {
         int rainRow, rainColumn;
         int min = 0;
         int rowRange = (row - 1) - min + 1;
         int columnRange = (column - 1) - min + 1;
-        int searchCountMax = row * column;
         int availableSpots = 0;
 
         for (int x = 0; x < garden.length; x++) {
@@ -107,14 +139,13 @@ public class Garden {
                 String randomSpot = garden[rainRow][rainColumn];
 
                 if (!randomSpot.equals("*") && availableSpots > 0) {
-                    for (int searchCount = 0; searchCount <= searchCountMax; searchCount++) {
                         //search for empty spot and fill in with randomSpot
                         rainRow = (int) (Math.random() * rowRange) + min;
                         rainColumn = (int) (Math.random() * columnRange) + min;
                         if (garden[rainRow][rainColumn].equals("*")) {
                             garden[rainRow][rainColumn] = randomSpot;
                         }
-                    }
+
                 }
                 viewGarden(garden);
             }
