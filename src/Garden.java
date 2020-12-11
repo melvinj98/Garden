@@ -86,21 +86,43 @@ public class Garden {
 
     private static void letItRain(String[][] garden) {
         int rainRow, rainColumn;
-        boolean spotFound = false;
+        int min = 0;
+        int rowRange = (row - 1) - min + 1;
+        int columnRange = (column - 1) - min + 1;
+        int searchCountMax = row * column;
+        int availableSpots = 0;
 
-        for (int i = 0; i < 5; i++) {
-            rainRow = (int) (0 * (Math.random() * row));
-            rainColumn = (int) (0 * (Math.random() * column));
-            String randomSpot = garden[rainRow][rainColumn];
-
-            if (!randomSpot.equals("*")) {
-                do{
-                    //todo: look for empty spot
-                }while(!spotFound);
+        for (int x = 0; x < garden.length; x++) {
+            for (int y = 0; y < garden[0].length; y++) {
+                String spot = garden[x][y];
+                if (spot.equals("*"))
+                    availableSpots++;
             }
         }
 
+        if (availableSpots > 0) {
+            for (int i = 0; i < 5; i++) {
+                rainRow = (int) (Math.random() * rowRange) + min;
+                rainColumn = (int) (Math.random() * columnRange) + min;
+                String randomSpot = garden[rainRow][rainColumn];
+
+                if (!randomSpot.equals("*") && availableSpots > 0) {
+                    for (int searchCount = 0; searchCount <= searchCountMax; searchCount++) {
+                        //search for empty spot and fill in with randomSpot
+                        rainRow = (int) (Math.random() * rowRange) + min;
+                        rainColumn = (int) (Math.random() * columnRange) + min;
+                        if (garden[rainRow][rainColumn].equals("*")) {
+                            garden[rainRow][rainColumn] = randomSpot;
+                        }
+                    }
+                }
+                viewGarden(garden);
+            }
+        } else {
+            System.out.println("Garden is full");
+        }
     }
+
 
     //reads from selected file and adds to garden array
     public static String[][] readFromFile(String fileName) {
