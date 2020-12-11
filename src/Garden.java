@@ -1,4 +1,3 @@
-import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -59,7 +58,10 @@ public class Garden {
             System.out.println("[4] Plant list");
             System.out.println("[5] Move plant");
             System.out.println("[6] See locations of plant");
-            System.out.println("[7] Quit");
+            System.out.println("[7] Let it rain");
+
+
+            System.out.println("[8] Quit");
 
             option = keyboard.next();
 
@@ -70,7 +72,8 @@ public class Garden {
                 case "4" -> plantList();
                 case "5" -> movePlant(garden);
                 case "6" -> plantLocations(garden);
-                case "7" -> {
+                case "7" -> letItRain(garden);
+                case "8" -> {
                     System.out.println("Quitting Program");
                     quit = true;
                 }
@@ -79,6 +82,24 @@ public class Garden {
         } while (!quit);
 
         addToFile(garden, fileName, column);
+    }
+
+    private static void letItRain(String[][] garden) {
+        int rainRow, rainColumn;
+        boolean spotFound = false;
+
+        for (int i = 0; i < 5; i++) {
+            rainRow = (int) (0 * (Math.random() * row));
+            rainColumn = (int) (0 * (Math.random() * column));
+            String randomSpot = garden[rainRow][rainColumn];
+
+            if (!randomSpot.equals("*")) {
+                do{
+                    //todo: look for empty spot
+                }while(!spotFound);
+            }
+        }
+
     }
 
     //reads from selected file and adds to garden array
