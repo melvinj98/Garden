@@ -1,3 +1,4 @@
+import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -50,7 +51,8 @@ public class Garden {
         }
 
         do {
-            //add, remove, show garden, show plant list, *move plant, *print locations of plants, quit
+            //add, remove, show garden, show plant list, move plant, *print locations of plants, quit
+            System.out.println("-------------");
             System.out.println("[1] Add plant");
             System.out.println("[2] Remove plant");
             System.out.println("[3] See " + fileName);
@@ -66,6 +68,8 @@ public class Garden {
                 case "2" -> removeFromGarden(garden);
                 case "3" -> viewGarden(garden);
                 case "4" -> plantList();
+                case "5" -> movePlant(garden);
+                case "6" -> plantLocations(garden);
                 case "7" -> {
                     System.out.println("Quitting Program");
                     quit = true;
@@ -115,6 +119,8 @@ public class Garden {
         System.out.println();
         System.out.println("-------------------------------");
         System.out.print("");
+
+        viewGarden(garden);
         plantList();
 
         System.out.println("Where would you like to plant the flower?");
@@ -128,6 +134,7 @@ public class Garden {
             String option = keyboard.next();
             if (option.equalsIgnoreCase("y")) {
                 garden[x][y] = plant;
+                System.out.println("Planted at row " + x + " column " + y);
             } else {
                 System.out.println("Selected flower will not be planted");
             }
@@ -142,24 +149,37 @@ public class Garden {
         }
 
         System.out.println("Which spot would you like to clear up?: ");
-        int x = keyboard.nextInt();
-        int y = keyboard.nextInt();
-        garden[x][y] = "*";
-
+        int row = keyboard.nextInt();
+        int column = keyboard.nextInt();
+        garden[row][column] = "*";
     }
 
     //moves plant in garden array
     public static void movePlant(String[][] garden) {
         viewGarden(garden);
         System.out.println("Which plant would you like to move?");
+        int row = keyboard.nextInt();
+        int column = keyboard.nextInt();
+
+        String plantToMove = garden[row][column];
+        garden[row][column] = "*";
+
+        viewGarden(garden);
+        System.out.println("Where would you like to move the plant?");
+        row = keyboard.nextInt();
+        column = keyboard.nextInt();
+
+        garden[row][column] = plantToMove;
     }
 
     //prints out garden
     public static void viewGarden(String[][] garden) {
+        System.out.println("");
         System.out.println(fileName);
         for (String[] strings : garden) {
             System.out.println(Arrays.toString(strings));
         }
+        System.out.println("");
     }
 
     //adds garden array to file
@@ -216,5 +236,18 @@ public class Garden {
                 }
             }
         } while (!done);
+    }
+
+    //prints out plants and their location in array
+    public static void plantLocations(String[][] garden) {
+        System.out.println("");
+        for (int x = 0; x < garden.length; x++) {
+            for (int y = 0; y < garden[0].length; y++) {
+                String plant = garden[x][y];
+                if (!plant.equals("*"))
+                    System.out.println("Plant: " + plant + " -> Row: " + x + " Column: " + y);
+                System.out.println("");
+            }
+        }
     }
 }
