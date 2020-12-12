@@ -289,7 +289,7 @@ public class Garden {
         System.out.println();
     }
 
-    private static void viewSpecificPlantOnly() {
+    public static void viewSpecificPlantOnly() {
         plantLocations = new String[row][column];
         System.out.println("Which plant should be shown");
         String plant = keyboard.next();
@@ -312,7 +312,7 @@ public class Garden {
         System.out.println();
     }
 
-    private static void barchart() {
+    public static void barchart() {
         int countA = 0, countF = 0, countP = 0, countM = 0, countB = 0, countY = 0,
                 countD = 0, countT = 0, countS = 0, countL = 0, countEmpty = 0;
 
@@ -351,7 +351,7 @@ public class Garden {
         System.out.println("Empty spots: " + countEmpty);
     }
 
-    private static void drought() {
+    public static void drought() {
         int droughtRow, droughtColumn;
         int min = 0;
         int rowRange = (row - 1) - min + 1;
@@ -384,7 +384,7 @@ public class Garden {
 
     }
 
-    private static void letItRain() {
+    public static void letItRain() {
         int rainRow, rainColumn;
         int min = 0;
         int rowRange = (row - 1) - min + 1;
