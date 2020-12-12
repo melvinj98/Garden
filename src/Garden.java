@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Garden {
     static Scanner keyboard = new Scanner(System.in);
     static int row, column;
-    static String plant = "", fileName;
+    static String plant = "", gardenName, fileName;
     static String[][] garden = new String[row][column];
     static String[][] emptyLocations = new String[row][column];
     static String[][] plantLocations = new String[row][column];
@@ -18,11 +18,13 @@ public class Garden {
         option = keyboard.nextLine();
         if (option.equalsIgnoreCase("y")) {
             System.out.println("Enter new garden name");
-            fileName = keyboard.nextLine();
+            gardenName = keyboard.nextLine();
+            fileName = gardenName + ".txt";
             boolean correctSize = false;
 
+
             do {
-                System.out.println("How many rows and columns will " + fileName + " have?");
+                System.out.println("How many rows and columns will " + gardenName + " have?");
                 row = keyboard.nextInt();
                 column = keyboard.nextInt();
                 if (row >= 5 && column >= 5) {
@@ -46,9 +48,10 @@ public class Garden {
         } else if (option.equalsIgnoreCase("n")) {
             try {
                 System.out.println("Which garden would you like to continue?");
-                fileName = keyboard.nextLine();
-                System.out.println("Using garden file: " + fileName);
-                garden = readFromFile(fileName);
+                gardenName = keyboard.nextLine();
+                fileName = gardenName + ".txt";
+                System.out.println("Using garden file: " + gardenName);
+                garden = readFromFile();
             } catch (Exception e) {
                 System.out.println("File not found");
             }
@@ -59,7 +62,7 @@ public class Garden {
             System.out.println("-------------");
             System.out.println("[1] Add plant");
             System.out.println("[2] Remove plant");
-            System.out.println("[3] See " + fileName);
+            System.out.println("[3] See " + gardenName);
             System.out.println("[4] Plant list");
             System.out.println("[5] Move plant");
             System.out.println("[6] See locations of plant");
@@ -74,18 +77,18 @@ public class Garden {
             option = keyboard.next();
 
             switch (option) {
-                case "1" -> addToGarden(garden);
-                case "2" -> removeFromGarden(garden);
-                case "3" -> viewGarden(garden);
+                case "1" -> addToGarden();
+                case "2" -> removeFromGarden();
+                case "3" -> viewGarden();
                 case "4" -> plantList();
-                case "5" -> movePlant(garden);
-                case "6" -> plantLocations(garden);
-                case "7" -> letItRain(garden);
-                case "8" -> drought(garden);
+                case "5" -> movePlant();
+                case "6" -> plantLocations();
+                case "7" -> letItRain();
+                case "8" -> drought();
                 case "9" -> viewEmpty();
                 case "10" -> viewSpecificPlantOnly();
-                //case "11" -> barchart(garden);
-                case "12" -> addToFile(garden, fileName);
+                case "11" -> barchart();
+                case "12" -> addToFile();
                 case "13" -> {
                     System.out.println("Quitting Program");
                     quit = true;
@@ -93,83 +96,11 @@ public class Garden {
                 default -> System.out.println("Not a valid option, try again");
             }
         } while (!quit);
-
-        addToFile(garden, fileName);
-    }
-
-    private static void drought(String[][] garden) {
-        int droughtRow, rainColumn;
-        int min = 0;
-        int rowRange = (row - 1) - min + 1;
-        int columnRange = (column - 1) - min + 1;
-        int availableSpots = 0;
-
-        for (int x = 0; x < garden.length; x++) {
-            for (int y = 0; y < garden[0].length; y++) {
-                String spot = garden[x][y];
-                if (!spot.equals("*"))
-                    availableSpots++;
-            }
-        }
-
-        if (availableSpots > 0) {
-            for (int i = 0; i < 5; i++) {
-                droughtRow = (int) (Math.random() * rowRange) + min;
-                rainColumn = (int) (Math.random() * columnRange) + min;
-                String randomSpot = garden[droughtRow][rainColumn];
-
-                if (!randomSpot.equals("*")) {
-                    garden[droughtRow][rainColumn] = "*";
-                    availableSpots--;
-                }
-                viewGarden(garden);
-            }
-        } else {
-            System.out.println("Garden is empty");
-        }
-
-    }
-
-    private static void letItRain(String[][] garden) {
-        int rainRow, rainColumn;
-        int min = 0;
-        int rowRange = (row - 1) - min + 1;
-        int columnRange = (column - 1) - min + 1;
-        int availableSpots = 0;
-
-        for (int x = 0; x < garden.length; x++) {
-            for (int y = 0; y < garden[0].length; y++) {
-                String spot = garden[x][y];
-                if (spot.equals("*"))
-                    availableSpots++;
-            }
-        }
-
-        if (availableSpots > 0) {
-            for (int i = 0; i < 5; i++) {
-                rainRow = (int) (Math.random() * rowRange) + min;
-                rainColumn = (int) (Math.random() * columnRange) + min;
-                String randomSpot = garden[rainRow][rainColumn];
-
-                if (!randomSpot.equals("*") && availableSpots > 0) {
-                    //search for empty spot and fill in with randomSpot
-                    rainRow = (int) (Math.random() * rowRange) + min;
-                    rainColumn = (int) (Math.random() * columnRange) + min;
-                    if (garden[rainRow][rainColumn].equals("*")) {
-                        garden[rainRow][rainColumn] = randomSpot;
-                    }
-
-                }
-                viewGarden(garden);
-            }
-        } else {
-            System.out.println("Garden is full");
-        }
     }
 
 
     //reads from selected file and adds to garden array
-    public static String[][] readFromFile(String fileName) {
+    public static String[][] readFromFile() {
         try {
             Scanner sc = new Scanner(new BufferedReader(new FileReader(fileName)));
 
@@ -179,7 +110,6 @@ public class Garden {
             String[] tokenize = fileRead.split("x");
             row = Integer.parseInt(tokenize[0]);
             column = Integer.parseInt(tokenize[1]);
-            garden = new String[row][column];
 
             garden = new String[row][column];
             int c = 0;
@@ -199,7 +129,7 @@ public class Garden {
     }
 
     //adds plant to garden array
-    public static void addToGarden(String[][] garden) {
+    public static void addToGarden() {
         for (String[] strings : garden) {
             System.out.println(Arrays.toString(strings));
         }
@@ -207,7 +137,7 @@ public class Garden {
         System.out.println("-------------------------------");
         System.out.print("");
 
-        viewGarden(garden);
+        viewGarden();
         plantList();
 
         System.out.println("Where would you like to plant the flower?");
@@ -230,7 +160,7 @@ public class Garden {
     }
 
     //removes plant from garden array
-    public static void removeFromGarden(String[][] garden) {
+    public static void removeFromGarden() {
         for (String[] strings : garden) {
             System.out.println(Arrays.toString(strings));
         }
@@ -242,8 +172,8 @@ public class Garden {
     }
 
     //moves plant in garden array
-    public static void movePlant(String[][] garden) {
-        viewGarden(garden);
+    public static void movePlant() {
+        viewGarden();
         System.out.println("Which plant would you like to move?");
         int row = keyboard.nextInt();
         int column = keyboard.nextInt();
@@ -251,7 +181,7 @@ public class Garden {
         String plantToMove = garden[row][column];
         garden[row][column] = "*";
 
-        viewGarden(garden);
+        viewGarden();
         System.out.println("Where would you like to move the plant?");
         row = keyboard.nextInt();
         column = keyboard.nextInt();
@@ -260,17 +190,17 @@ public class Garden {
     }
 
     //prints out garden
-    public static void viewGarden(String[][] garden) {
-        System.out.println("");
-        System.out.println(fileName);
+    public static void viewGarden() {
+        System.out.println();
+        System.out.println(gardenName);
         for (String[] strings : garden) {
             System.out.println(Arrays.toString(strings));
         }
-        System.out.println("");
+        System.out.println();
     }
 
     //adds garden array to file
-    public static void addToFile(String[][] garden, String fileName) {
+    public static void addToFile() {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
             bw.write(row + "x" + column);
@@ -326,14 +256,14 @@ public class Garden {
     }
 
     //prints out plants and their location in array
-    public static void plantLocations(String[][] garden) {
-        System.out.println("");
+    public static void plantLocations() {
+        System.out.println();
         for (int x = 0; x < garden.length; x++) {
             for (int y = 0; y < garden[0].length; y++) {
                 String plant = garden[x][y];
                 if (!plant.equals("*"))
                     System.out.println("Plant: " + plant + " -> Row: " + x + " Column: " + y);
-                System.out.println("");
+                System.out.println();
             }
         }
     }
@@ -351,12 +281,12 @@ public class Garden {
                     emptyLocations[x][y] = " ";
             }
         }
-        System.out.println("");
-        System.out.println(fileName);
+        System.out.println();
+        System.out.println(gardenName);
         for (String[] strings : emptyLocations) {
             System.out.println(Arrays.toString(strings));
         }
-        System.out.println("");
+        System.out.println();
     }
 
     private static void viewSpecificPlantOnly() {
@@ -367,19 +297,127 @@ public class Garden {
         for (int x = 0; x < garden.length; x++) {
             for (int y = 0; y < garden[0].length; y++) {
                 String spot = garden[x][y];
-                if (spot.equals(plant))
+                if (spot.equals(plant.toUpperCase()))
                     plantLocations[x][y] = spot;
                 else
                     plantLocations[x][y] = " ";
             }
         }
 
-        System.out.println("");
-        System.out.println(fileName);
+        System.out.println();
+        System.out.println(gardenName);
         for (String[] strings : plantLocations) {
             System.out.println(Arrays.toString(strings));
         }
-        System.out.println("");
+        System.out.println();
     }
 
+    private static void barchart() {
+        int countA = 0, countF = 0, countP = 0, countM = 0, countB = 0, countY = 0,
+                countD = 0, countT = 0, countS = 0, countL = 0, countEmpty = 0;
+
+        for (int x = 0; x < garden.length; x++) {
+            for (int y = 0; y < garden[0].length; y++) {
+                plant = garden[x][y];
+                switch (plant) {
+                    case "A" -> countA++;
+                    case "F" -> countF++;
+                    case "P" -> countP++;
+                    case "M" -> countM++;
+                    case "B" -> countB++;
+                    case "Y" -> countY++;
+                    case "D" -> countD++;
+                    case "T" -> countT++;
+                    case "S" -> countS++;
+                    case "L" -> countL++;
+                    case "*" -> countEmpty++;
+                    default -> System.out.println("Error occurred");
+                }
+            }
+        }
+
+        System.out.println();
+        System.out.println(gardenName);
+        System.out.println("A: " + countA);
+        System.out.println("F: " + countF);
+        System.out.println("P: " + countP);
+        System.out.println("M: " + countM);
+        System.out.println("B: " + countB);
+        System.out.println("Y: " + countY);
+        System.out.println("D: " + countD);
+        System.out.println("T: " + countT);
+        System.out.println("S: " + countS);
+        System.out.println("L: " + countL);
+        System.out.println("Empty spots: " + countEmpty);
+    }
+
+    private static void drought() {
+        int droughtRow, droughtColumn;
+        int min = 0;
+        int rowRange = (row - 1) - min + 1;
+        int columnRange = (column - 1) - min + 1;
+        int availableSpots = 0;
+
+        for (int x = 0; x < garden.length; x++) {
+            for (int y = 0; y < garden[0].length; y++) {
+                String spot = garden[x][y];
+                if (!spot.equals("*"))
+                    availableSpots++;
+            }
+        }
+
+        if (availableSpots > 0) {
+            for (int i = 0; i < 5; i++) {
+                droughtRow = (int) (Math.random() * rowRange) + min;
+                droughtColumn = (int) (Math.random() * columnRange) + min;
+                String randomSpot = garden[droughtRow][droughtColumn];
+
+                if (!randomSpot.equals("*")) {
+                    garden[droughtRow][droughtColumn] = "*";
+                    availableSpots--;
+                }
+                viewGarden();
+            }
+        } else {
+            System.out.println("Garden is empty");
+        }
+
+    }
+
+    private static void letItRain() {
+        int rainRow, rainColumn;
+        int min = 0;
+        int rowRange = (row - 1) - min + 1;
+        int columnRange = (column - 1) - min + 1;
+        int availableSpots = 0;
+
+        for (int x = 0; x < garden.length; x++) {
+            for (int y = 0; y < garden[0].length; y++) {
+                String spot = garden[x][y];
+                if (spot.equals("*"))
+                    availableSpots++;
+            }
+        }
+
+        if (availableSpots > 0) {
+            for (int i = 0; i < 5; i++) {
+                rainRow = (int) (Math.random() * rowRange) + min;
+                rainColumn = (int) (Math.random() * columnRange) + min;
+                String randomSpot = garden[rainRow][rainColumn];
+
+                if (!randomSpot.equals("*") && availableSpots > 0) {
+                    //search for empty spot and fill in with randomSpot
+                    rainRow = (int) (Math.random() * rowRange) + min;
+                    rainColumn = (int) (Math.random() * columnRange) + min;
+                    if (garden[rainRow][rainColumn].equals("*")) {
+                        garden[rainRow][rainColumn] = randomSpot;
+                        availableSpots--;
+                    }
+                }
+                viewGarden();
+            }
+        } else {
+            System.out.println("Garden is full");
+        }
+    }
 }
